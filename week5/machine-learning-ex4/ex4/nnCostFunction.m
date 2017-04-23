@@ -62,21 +62,33 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% Transform [0, 1, 2 ..] to [0;0;0;0;0;0;0;0;0;1], [1;0;0;0;0;0;0;0;0;0], [0;1;0;0;0;0;0;0;0;0]
+num_of_classes = max(y);
+y_class = zeros(num_of_classes, size(y, 1));
+
+for j=1:size(y, 1)
+    if y(j) == 0
+        y_class(10, j) = 1;
+    else
+        y_class(y(j), j) = 1;
+    endif
+endfor
 
 
+% Calculating h_theta(x)
+a_1 = [ones(size(X, 1), 1) X]; % input layer
+
+z_2 = a_1 * Theta1';           % hidden layer
+a_2 = sigmoid(z_2);
+a_2 = [ones(size(a_2, 1), 1) a_2];
+
+z_3 = a_2 * Theta2';           % output layer
+a_3 = sigmoid(z_3);
+h_theta = a_3;
 
 
-
-
-
-
-
-
-
-
-
-
-
+% Calculating J(Theta)
+J = 1/m * sum(sum(-y_class .* log(h_theta)' - (1 - y_class) .* log(1 - h_theta)'));
 
 
 
