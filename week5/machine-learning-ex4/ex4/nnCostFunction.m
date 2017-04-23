@@ -90,6 +90,9 @@ h_theta = a_3;
 % Calculating J(Theta)
 J = 1/m * sum(sum(-y_class .* log(h_theta)' - (1 - y_class) .* log(1 - h_theta)'));
 
+% Calculating J(Theta) regularized
+
+J += lambda/(2*m) * (sum(sum(Theta1(:, 2:end) .^2)) + sum(sum(Theta2(:, 2:end) .^2)));
 
 
 % -------------------------------------------------------------
