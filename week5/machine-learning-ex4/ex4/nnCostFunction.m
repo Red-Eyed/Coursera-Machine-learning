@@ -63,15 +63,11 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 % Transform [0, 1, 2 ..] to [0;0;0;0;0;0;0;0;0;1], [1;0;0;0;0;0;0;0;0;0], [0;1;0;0;0;0;0;0;0;0]
-num_of_classes = max(y);
-y_class = zeros(num_of_classes, size(y, 1));
 
-for j=1:size(y, 1)
-    if y(j) == 0
-        y_class(10, j) = 1;
-    else
-        y_class(y(j), j) = 1;
-    endif
+y_class = zeros(num_labels, m);
+
+for i=1:m
+    y_class(y(i), i) = 1;
 endfor
 
 
@@ -93,6 +89,32 @@ J = 1/m * sum(sum(-y_class .* log(h_theta)' - (1 - y_class) .* log(1 - h_theta)'
 % Calculating J(Theta) regularized
 J += lambda/(2*m) * (sum(sum(Theta1(:, 2:end) .^2)) + sum(sum(Theta2(:, 2:end) .^2)));
 
+%a_1 = a_1(:, 2:end);
+%a_2 = a_2(:, 2:end);
+% Backpropagation
+for t = 1:m
+    % step 1
+    % skip because we have already set it
+
+    % step 2
+    a_3_k = a_3(t, :)';
+    y_k = y_class(:, t);
+    delta_3 = a_3_k - y_k;
+
+    % step 3
+    dg = (a_2(t, :) .* (1 - a_2(t, :)))';
+    delta_2 = (Theta2' * delta_3) .* dg;
+    delta_2 = delta_2(2:end);
+
+    % step 4
+    Theta1_grad += delta_2 * a_1(t, :);
+    Theta2_grad += delta_3 * a_2(t, :);
+
+endfor
+
+% step 5
+Theta1_grad = 1/m * (Theta1_grad + lambda * [zeros(size(Theta1, 1), 1), Theta1(:, 2:end)]);
+Theta2_grad = 1/m * (Theta2_grad + lambda * [zeros(size(Theta2, 1), 1), Theta2(:, 2:end)]);
 
 % -------------------------------------------------------------
 
