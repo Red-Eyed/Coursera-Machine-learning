@@ -11,6 +11,7 @@ m = length(y); % number of training examples
 % You need to return the following variables correctly 
 J = 0;
 grad = zeros(size(theta));
+grad
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost and gradient of regularized linear 
@@ -22,10 +23,13 @@ grad = zeros(size(theta));
 h_theta_liner = sum(theta' .* X, 2);
 
 J = (sum((h_theta_liner - y).^2) + lambda * sum(theta(2:end) .^2)) / (2*m);
-grad = 1/m * sum((h_theta_liner - y) .* X) + lambda/m * sum(theta(2:end) .^2);
+
+grad = 1/m * sum((h_theta_liner - y) .* X)' + ...
+    lambda/m * [zeros(1,1); theta(2:end)];
 
 % =========================================================================
-
+grad
 grad = grad(:);
+grad
 
 end
