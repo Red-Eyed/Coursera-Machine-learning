@@ -8,8 +8,8 @@ function [C, sigma] = dataset3Params(X, y, Xval, yval)
 %
 
 % You need to return the following variables correctly.
-C = 1;
-sigma = 0.3;
+C = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
+sigma = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Fill in this function to return the optimal C and sigma
@@ -23,10 +23,20 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+for i = 1:length(C)
+    for j = 1:length(sigma)
+        model= svmTrain(X, y, C(i), @(x1, x2) gaussianKernel(x1, x2, sigma(j))); % Training on training set
+        predictions = svmPredict(model, Xval);                                   % Predict on cross validation set
+        prediction_error(i, j) = mean(double(predictions ~= yval));              % Compute error
+    end
+end
 
 
+% find coordinates of minimum value
+[idx_C, idx_sigma] = find(prediction_error == min(min(prediction_error)));
 
-
+C = C(idx_C);
+sigma = sigma(idx_sigma);
 
 
 % =========================================================================
